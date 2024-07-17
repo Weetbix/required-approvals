@@ -67,10 +67,11 @@ function checkRequiredApprovals(config) {
         let actionFailed = false;
         const octokit = (0, github_1.getOctokit)(config.token);
         const filenames = yield getPRFilenames(octokit);
-        const { data: reviews } = yield octokit.rest.pulls.listReviews({
+        const reviews = yield octokit.paginate(octokit.rest.pulls.listReviews, {
             owner: github_1.context.repo.owner,
             repo: github_1.context.repo.repo,
             pull_number: (_b = (_a = github_1.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : 0,
+            per_page: 100,
         });
         core.info(`Found ${reviews.length} reviews.`);
         for (const review of reviews) {

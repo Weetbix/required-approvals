@@ -42,10 +42,11 @@ export async function checkRequiredApprovals(config: Config): Promise<void> {
   const octokit = getOctokit(config.token)
   const filenames = await getPRFilenames(octokit)
 
-  const {data: reviews} = await octokit.rest.pulls.listReviews({
+  const reviews = await octokit.paginate(octokit.rest.pulls.listReviews, {
     owner: context.repo.owner,
     repo: context.repo.repo,
     pull_number: context.payload.pull_request?.number ?? 0,
+    per_page: 100,
   })
 
   core.info(`Found ${reviews.length} reviews.`)
