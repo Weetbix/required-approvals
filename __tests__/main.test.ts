@@ -26,10 +26,10 @@ jest.mock('@actions/github', () => {
     getOctokit: jest.fn(() => ({
       rest: {
         pulls: {
-          listReviews: listReviewsMock,
           listFiles: listFilesMock,
         },
       },
+      paginate: listReviewsMock,
     })),
   }
 })
@@ -41,9 +41,7 @@ function mockFileList(filenames: string[]) {
 }
 
 function mockNumberOfReviews(number: number) {
-  listReviewsMock.mockReturnValue({
-    data: Array(number).fill({state: 'APPROVED'}),
-  })
+  listReviewsMock.mockReturnValue(Array(number).fill({state: 'APPROVED'}))
 }
 
 beforeEach(() => {
